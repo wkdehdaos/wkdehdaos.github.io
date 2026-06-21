@@ -38,6 +38,37 @@
             <h2 id="recommendation-title">추천 음식 5가지</h2>
             <div id="food-recommendation" class="food-grid empty-state">권역을 선택하면 추천 음식이 나타납니다.</div>
         </section>
+
+        <section class="contact-section" aria-labelledby="contact-title">
+            <div class="section-heading">
+                <h2 id="contact-title">제휴문의 · 광고문의</h2>
+                <p>서비스 제휴, 광고 집행, 콘텐츠 협업 문의를 남겨주세요.</p>
+            </div>
+            <form class="contact-form" action="https://formspree.io/f/xykqgolk" method="POST">
+                <div class="form-row">
+                    <label for="contact-name">이름</label>
+                    <input id="contact-name" name="name" type="text" autocomplete="name" required>
+                </div>
+                <div class="form-row">
+                    <label for="contact-email">이메일</label>
+                    <input id="contact-email" name="email" type="email" autocomplete="email" required>
+                </div>
+                <div class="form-row">
+                    <label for="contact-type">문의 유형</label>
+                    <select id="contact-type" name="inquiry_type" required>
+                        <option value="제휴문의">제휴문의</option>
+                        <option value="광고문의">광고문의</option>
+                        <option value="기타문의">기타문의</option>
+                    </select>
+                </div>
+                <div class="form-row form-row-full">
+                    <label for="contact-message">문의 내용</label>
+                    <textarea id="contact-message" name="message" rows="5" required></textarea>
+                </div>
+                <input type="hidden" name="_subject" value="팔도 실시간 날씨 음식 추천 문의">
+                <button class="submit-btn" type="submit">문의 보내기</button>
+            </form>
+        </section>
     </main>
     <script src="main.js"></script>
 </body>
