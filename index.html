@@ -1,14 +1,31 @@
-<!doctype html>
-<html lang="en">
+
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>날씨별 음식 추천</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+    <header>
+        <h1>날씨별 음식 추천</h1>
+    </header>
+    <main>
+        <div class="weather-selection">
+            <h2>오늘 날씨는 어떤가요?</h2>
+            <div class="weather-options">
+                <button class="weather-btn" data-weather="sunny">☀️ 맑음</button>
+                <button class="weather-btn" data-weather="rainy">🌧️ 비</button>
+                <button class="weather-btn" data-weather="snowy">❄️ 눈</button>
+                <button class="weather-btn" data-weather="cloudy">☁️ 흐림</button>
+            </div>
+        </div>
+        <div class="recommendation-container">
+            <h2>오늘의 추천 메뉴</h2>
+            <div id="food-recommendation"></div>
+        </div>
+    </main>
+    <script src="main.js"></script>
 </body>
 </html>
