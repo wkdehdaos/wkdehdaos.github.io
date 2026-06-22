@@ -10,10 +10,16 @@
     <header>
         <div class="header-inner">
             <h1>팔도 실시간 날씨 음식 추천</h1>
-            <button class="theme-toggle" type="button" aria-pressed="false" aria-label="다크 모드로 전환">
-                <span class="theme-icon" aria-hidden="true">🌙</span>
-                <span class="theme-label">다크 모드</span>
-            </button>
+            <div class="header-actions">
+                <button class="comments-toggle" type="button" id="comments-toggle" aria-expanded="false" aria-label="댓글 보기">
+                    <span aria-hidden="true">💬</span>
+                    <span class="comments-label">댓글</span>
+                </button>
+                <button class="theme-toggle" type="button" aria-pressed="false" aria-label="다크 모드로 전환">
+                    <span class="theme-icon" aria-hidden="true">🌙</span>
+                    <span class="theme-label">다크 모드</span>
+                </button>
+            </div>
         </div>
     </header>
     <main>
@@ -68,6 +74,14 @@
                 <input type="hidden" name="_subject" value="팔도 실시간 날씨 음식 추천 문의">
                 <button class="submit-btn" type="submit">문의 보내기</button>
             </form>
+        </section>
+
+        <section class="comments-section" id="comments-section" hidden aria-labelledby="comments-title">
+            <div class="section-heading">
+                <h2 id="comments-title">댓글</h2>
+            </div>
+            <div id="disqus_thread"></div>
+            <noscript>댓글을 보려면 JavaScript를 활성화해 주세요. <a href="https://disqus.com/?ref_noscript">Disqus 댓글 서비스</a></noscript>
         </section>
     </main>
     <script src="main.js"></script>

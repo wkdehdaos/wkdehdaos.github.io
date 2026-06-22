@@ -241,3 +241,33 @@ regionGrid.addEventListener('click', (event) => {
 });
 
 handleRegionClick('gyeonggi');
+
+const commentsToggle = document.getElementById('comments-toggle');
+const commentsSection = document.getElementById('comments-section');
+let disqusLoaded = false;
+
+const loadDisqus = () => {
+    if (disqusLoaded) return;
+    disqusLoaded = true;
+
+    window.disqus_config = function () {
+        this.page.url = window.location.href;
+        this.page.identifier = window.location.pathname;
+    };
+
+    var d = document, s = d.createElement('script');
+    s.src = 'https://tradingcode.disqus.com/embed.js';
+    s.setAttribute('data-timestamp', +new Date());
+    (d.head || d.body).appendChild(s);
+};
+
+commentsToggle.addEventListener('click', () => {
+    const isOpen = !commentsSection.hidden;
+    commentsSection.hidden = isOpen;
+    commentsToggle.setAttribute('aria-expanded', String(!isOpen));
+
+    if (!isOpen) {
+        loadDisqus();
+        commentsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+});

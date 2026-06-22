@@ -63,6 +63,12 @@ header {
     gap: 1rem;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
 h1 {
     font-size: clamp(1.4rem, 4vw, 2rem);
     line-height: 1.2;
@@ -89,6 +95,35 @@ h2 {
 
 .theme-toggle:hover {
     background: rgba(255, 255, 255, 0.18);
+}
+
+.comments-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    min-height: 2.4rem;
+    padding: 0.45rem 0.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--header-text);
+    cursor: pointer;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.comments-toggle:hover,
+.comments-toggle[aria-expanded="true"] {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.comments-section {
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel-bg);
+    box-shadow: 0 4px 16px var(--card-shadow);
+    margin-bottom: 1.25rem;
 }
 
 main {
@@ -341,6 +376,10 @@ main {
     .header-inner {
         align-items: flex-start;
         flex-direction: column;
+    }
+
+    .comments-label {
+        display: none;
     }
 
     .region-grid,

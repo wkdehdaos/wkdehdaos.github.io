@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd /home/user/tradingcode && git status --porcelain | grep -q . && git add -A && git commit -m 'auto: save changes' && git push 2>/dev/null || true",
+            "timeout": 30,
+            "statusMessage": "GitHub에 자동 저장 중..."
+          }
+        ]
+      }
+    ]
+  }
+}
