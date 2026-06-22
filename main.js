@@ -144,6 +144,8 @@ const initMap = (lat, lon, restaurants) => {
             .bindPopup(`<strong>${r.name}</strong><br><span style="color:#666;font-size:.85em">${r.category}</span><br><span style="color:#888;font-size:.82em">${formatDistance(r.distance)}</span>`);
     });
     map.fitBounds(bounds, { padding: [40, 40] });
+    // hidden → visible 전환 후 Leaflet이 컨테이너 크기를 재계산하도록 강제
+    setTimeout(() => map && map.invalidateSize(), 100);
 };
 
 /* ── UI ── */
