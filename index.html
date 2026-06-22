@@ -11,9 +11,13 @@
         <div class="header-inner">
             <h1>팔도 실시간 날씨 음식 추천</h1>
             <div class="header-actions">
-                <button class="comments-toggle" type="button" id="comments-toggle" aria-expanded="false" aria-label="댓글 보기">
+                <button class="header-btn" type="button" id="contact-toggle" aria-label="제휴문의">
+                    <span aria-hidden="true">✉️</span>
+                    <span class="header-btn-label">제휴문의</span>
+                </button>
+                <button class="header-btn" type="button" id="comments-toggle" aria-label="댓글">
                     <span aria-hidden="true">💬</span>
-                    <span class="comments-label">댓글</span>
+                    <span class="header-btn-label">댓글</span>
                 </button>
                 <button class="theme-toggle" type="button" aria-pressed="false" aria-label="다크 모드로 전환">
                     <span class="theme-icon" aria-hidden="true">🌙</span>
@@ -22,6 +26,7 @@
             </div>
         </div>
     </header>
+
     <main>
         <section class="weather-selection" aria-labelledby="region-title">
             <div class="section-heading">
@@ -44,46 +49,59 @@
             <h2 id="recommendation-title">추천 음식 5가지</h2>
             <div id="food-recommendation" class="food-grid empty-state">권역을 선택하면 추천 음식이 나타납니다.</div>
         </section>
-
-        <section class="contact-section" aria-labelledby="contact-title">
-            <div class="section-heading">
-                <h2 id="contact-title">제휴문의 · 광고문의</h2>
-                <p>서비스 제휴, 광고 집행, 콘텐츠 협업 문의를 남겨주세요.</p>
-            </div>
-            <form class="contact-form" action="https://formspree.io/f/xykqgolk" method="POST">
-                <div class="form-row">
-                    <label for="contact-name">이름</label>
-                    <input id="contact-name" name="name" type="text" autocomplete="name" required>
-                </div>
-                <div class="form-row">
-                    <label for="contact-email">이메일</label>
-                    <input id="contact-email" name="email" type="email" autocomplete="email" required>
-                </div>
-                <div class="form-row">
-                    <label for="contact-type">문의 유형</label>
-                    <select id="contact-type" name="inquiry_type" required>
-                        <option value="제휴문의">제휴문의</option>
-                        <option value="광고문의">광고문의</option>
-                        <option value="기타문의">기타문의</option>
-                    </select>
-                </div>
-                <div class="form-row form-row-full">
-                    <label for="contact-message">문의 내용</label>
-                    <textarea id="contact-message" name="message" rows="5" required></textarea>
-                </div>
-                <input type="hidden" name="_subject" value="팔도 실시간 날씨 음식 추천 문의">
-                <button class="submit-btn" type="submit">문의 보내기</button>
-            </form>
-        </section>
-
-        <section class="comments-section" id="comments-section" hidden aria-labelledby="comments-title">
-            <div class="section-heading">
-                <h2 id="comments-title">댓글</h2>
-            </div>
-            <div id="disqus_thread"></div>
-            <noscript>댓글을 보려면 JavaScript를 활성화해 주세요. <a href="https://disqus.com/?ref_noscript">Disqus 댓글 서비스</a></noscript>
-        </section>
     </main>
+
+    <!-- 제휴문의 모달 -->
+    <div class="modal-overlay" id="contact-modal" hidden role="dialog" aria-modal="true" aria-labelledby="contact-modal-title">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="contact-modal-title">제휴문의 · 광고문의</h2>
+                <button class="modal-close" type="button" aria-label="닫기">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">서비스 제휴, 광고 집행, 콘텐츠 협업 문의를 남겨주세요.</p>
+                <form class="contact-form" action="https://formspree.io/f/xykqgolk" method="POST">
+                    <div class="form-row">
+                        <label for="contact-name">이름</label>
+                        <input id="contact-name" name="name" type="text" autocomplete="name" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="contact-email">이메일</label>
+                        <input id="contact-email" name="email" type="email" autocomplete="email" required>
+                    </div>
+                    <div class="form-row">
+                        <label for="contact-type">문의 유형</label>
+                        <select id="contact-type" name="inquiry_type" required>
+                            <option value="제휴문의">제휴문의</option>
+                            <option value="광고문의">광고문의</option>
+                            <option value="기타문의">기타문의</option>
+                        </select>
+                    </div>
+                    <div class="form-row form-row-full">
+                        <label for="contact-message">문의 내용</label>
+                        <textarea id="contact-message" name="message" rows="5" required></textarea>
+                    </div>
+                    <input type="hidden" name="_subject" value="팔도 실시간 날씨 음식 추천 문의">
+                    <button class="submit-btn" type="submit">문의 보내기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 댓글 모달 -->
+    <div class="modal-overlay" id="comments-modal" hidden role="dialog" aria-modal="true" aria-labelledby="comments-modal-title">
+        <div class="modal modal-wide">
+            <div class="modal-header">
+                <h2 id="comments-modal-title">댓글</h2>
+                <button class="modal-close" type="button" aria-label="닫기">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="disqus_thread"></div>
+                <noscript>댓글을 보려면 JavaScript를 활성화해 주세요. <a href="https://disqus.com/?ref_noscript">Disqus 댓글 서비스</a></noscript>
+            </div>
+        </div>
+    </div>
+
     <script src="main.js"></script>
 </body>
 </html>

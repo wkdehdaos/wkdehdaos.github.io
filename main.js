@@ -242,8 +242,6 @@ regionGrid.addEventListener('click', (event) => {
 
 handleRegionClick('gyeonggi');
 
-const commentsToggle = document.getElementById('comments-toggle');
-const commentsSection = document.getElementById('comments-section');
 let disqusLoaded = false;
 
 const loadDisqus = () => {
@@ -255,19 +253,44 @@ const loadDisqus = () => {
         this.page.identifier = window.location.pathname;
     };
 
-    var d = document, s = d.createElement('script');
+    const s = document.createElement('script');
     s.src = 'https://tradingcode.disqus.com/embed.js';
     s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
+    (document.head || document.body).appendChild(s);
 };
 
-commentsToggle.addEventListener('click', () => {
-    const isOpen = !commentsSection.hidden;
-    commentsSection.hidden = isOpen;
-    commentsToggle.setAttribute('aria-expanded', String(!isOpen));
+const openModal = (modal) => {
+    modal.hidden = false;
+    document.body.style.overflow = 'hidden';
+    modal.querySelector('.modal-close').focus();
+};
 
-    if (!isOpen) {
-        loadDisqus();
-        commentsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+const closeModal = (modal) => {
+    modal.hidden = true;
+    document.body.style.overflow = '';
+};
+
+const contactModal = document.getElementById('contact-modal');
+const commentsModal = document.getElementById('comments-modal');
+
+document.getElementById('contact-toggle').addEventListener('click', () => openModal(contactModal));
+document.getElementById('comments-toggle').addEventListener('click', () => {
+    loadDisqus();
+    openModal(commentsModal);
+});
+
+document.querySelectorAll('.modal-close').forEach((btn) => {
+    btn.addEventListener('click', () => closeModal(btn.closest('.modal-overlay')));
+});
+
+document.querySelectorAll('.modal-overlay').forEach((overlay) => {
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) closeModal(overlay);
+    });
+});
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        [contactModal, commentsModal].forEach((m) => { if (!m.hidden) closeModal(m); });
     }
 });
