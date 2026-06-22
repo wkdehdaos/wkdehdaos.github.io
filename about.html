@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>서비스 소개 — 내 주변 음식점 추천</title>
+    <meta name="description" content="내 주변 음식점 추천 서비스는 현재 위치와 날씨를 분석해 지금 이 순간 가장 어울리는 음식점 3곳을 추천합니다. 서비스 철학과 작동 방식을 소개합니다.">
+    <meta name="google-adsense-account" content="ca-pub-7937258032518666">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7937258032518666" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+    <header>
+        <div class="header-inner">
+            <a href="/" class="site-title">내 주변 음식점 추천</a>
+            <nav class="header-nav" aria-label="주요 메뉴">
+                <a href="/">홈</a>
+                <a href="guide.html">음식 가이드</a>
+                <a href="about.html" aria-current="page">서비스 소개</a>
+            </nav>
+            <div class="header-actions">
+                <button class="theme-toggle" type="button" aria-pressed="false" aria-label="다크 모드로 전환">
+                    <span class="theme-icon" aria-hidden="true">🌙</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-wrap">
+            <a class="back-link" href="/">← 홈으로</a>
+            <h1>서비스 소개</h1>
+            <p class="page-updated">내 주변 음식점 추천 서비스에 대해 소개합니다.</p>
+
+            <p>"오늘 뭐 먹지?" 이 질문은 하루에도 여러 번 반복되는 고민입니다. 선택지는 많지만 지금 이 순간 날씨와 시간에 딱 맞는 음식을 고르기는 쉽지 않습니다. 내 주변 음식점 추천 서비스는 이 고민을 해결하기 위해 만들어졌습니다.</p>
+
+            <h2>서비스 철학</h2>
+            <p>이 서비스의 핵심은 단순함입니다. 버튼 하나만 누르면 현재 위치와 날씨를 분석해 지금 상황에 가장 어울리는 음식점 3곳을 바로 추천해 드립니다. 무수히 많은 선택지를 탐색하는 것이 아니라, 지금 이 순간에 최적화된 소수의 좋은 선택을 제안하는 것을 목표로 합니다.</p>
+
+            <h2>작동 방식</h2>
+
+            <h3>1단계: 위치 확인</h3>
+            <p>브라우저의 위치 정보 API를 통해 현재 위치를 파악합니다. 위치 정보는 음식점 검색에만 사용되며 서버에 저장되지 않습니다.</p>
+
+            <h3>2단계: 날씨 분석</h3>
+            <p>Open-Meteo의 기상 데이터를 통해 현재 위치의 실시간 날씨를 확인합니다. 기온, 날씨 상태(맑음/비/눈)를 파악해 적합한 음식 유형을 분석합니다.</p>
+            <ul>
+                <li>기온 25°C 이상: 냉면, 회, 초밥 등 시원한 음식 선호</li>
+                <li>기온 15°C 이하: 국밥, 찌개, 고기구이 등 따뜻한 음식 선호</li>
+                <li>비·눈 날씨: 파전, 칼국수 등 비 오는 날 어울리는 음식 선호</li>
+            </ul>
+
+            <h3>3단계: 시간대 고려</h3>
+            <p>현재 시간대에 따라 아침·점심·저녁·야식에 어울리는 음식 유형이 다릅니다. 이를 반영해 추천 가중치를 조정합니다.</p>
+
+            <h3>4단계: 주변 음식점 검색</h3>
+            <p>카카오 로컬 API를 통해 반경 1km 이내 음식점을 검색합니다. 카페나 디저트 가게는 제외하고 식사 중심 음식점만 포함합니다.</p>
+
+            <h3>5단계: 추천 선정</h3>
+            <p>날씨·시간 적합도 점수와 거리를 종합해 최적의 음식점 3곳을 선정합니다. "다시 찾기" 버튼을 누르면 이미 추천한 곳을 제외하고 새로운 음식점을 보여줍니다.</p>
+
+            <h2>사용 기술</h2>
+            <ul>
+                <li><strong>카카오 로컬 API</strong> — 주변 음식점 검색 및 상세 정보 제공</li>
+                <li><strong>Open-Meteo API</strong> — 실시간 날씨 정보 (무료, API 키 불필요)</li>
+                <li><strong>OpenStreetMap / Leaflet.js</strong> — 지도 표시</li>
+                <li><strong>Nominatim</strong> — 위도·경도를 지역명으로 변환</li>
+                <li><strong>OpenStreetMap Overpass API</strong> — 카카오 API 실패 시 백업 음식점 데이터</li>
+            </ul>
+
+            <h2>개인정보 보호</h2>
+            <p>이 서비스는 사용자의 개인정보를 수집하거나 저장하지 않습니다. 위치 정보는 음식점 검색 요청 시 일시적으로 사용된 후 즉시 파기됩니다. 자세한 내용은 <a href="privacy.html">개인정보처리방침</a>을 확인해 주세요.</p>
+
+            <h2>문의 및 제휴</h2>
+            <p>서비스 관련 문의, 광고 제휴, 콘텐츠 협업은 홈 화면의 <strong>제휴문의</strong> 버튼을 통해 연락해 주세요. 음식점 정보 오류나 서비스 개선 제안도 환영합니다.</p>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <p class="footer-name">내 주변 음식점 추천</p>
+                <p class="footer-desc">위치·날씨 기반 실시간 맛집 탐색 서비스</p>
+            </div>
+            <nav class="footer-nav">
+                <a href="/">홈</a>
+                <a href="guide.html">음식 가이드</a>
+                <a href="about.html">서비스 소개</a>
+                <a href="privacy.html">개인정보처리방침</a>
+            </nav>
+            <p class="footer-copy">© 2025 내 주변 음식점 추천. 음식점 정보는 카카오맵 기준입니다.</p>
+        </div>
+    </footer>
+
+    <script>
+    const THEME_KEY = 'restaurant-theme';
+    const root = document.documentElement;
+    const themeToggle = document.querySelector('.theme-toggle');
+    const themeIcon = document.querySelector('.theme-icon');
+    const applyTheme = (t) => {
+        const isDark = t === 'dark';
+        root.dataset.theme = t;
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+        themeToggle.setAttribute('aria-label', isDark ? '화이트 모드로 전환' : '다크 모드로 전환');
+        themeIcon.textContent = isDark ? '☀️' : '🌙';
+    };
+    const saved = localStorage.getItem(THEME_KEY);
+    applyTheme(saved === 'light' || saved === 'dark' ? saved : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    themeToggle.addEventListener('click', () => {
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem(THEME_KEY, next);
+        applyTheme(next);
+    });
+    </script>
+</body>
+</html>
