@@ -27,7 +27,7 @@ themeToggle.addEventListener('click', () => {
     applyTheme(next);
 });
 
-/* ── 거리 계산 (Haversine) ── */
+/* ── 거리 계산 ── */
 const haversineM = (lat1, lon1, lat2, lon2) => {
     const R = 6371000;
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -39,13 +39,93 @@ const haversineM = (lat1, lon1, lat2, lon2) => {
 
 const formatDistance = (m) => m >= 1000 ? `${(m / 1000).toFixed(1)}km` : `${m}m`;
 
+/* ── 날씨 API (Open-Meteo) ── */
+const fetchWeather = async (lat, lon) => {
+    try {
+        const res = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code`
+        );
+        const data = await res.json();
+        return { temp: data.current.temperature_2m, code: data.current.weather_code };
+    } catch {
+        return { temp: 20, code: 0 };
+    }
+};
+
+const getWeatherType = (code, temp) => {
+    if (temp >= 28) return 'hot';
+    if (temp <= 5)  return 'cold';
+    if ([51,53,55,61,63,65,80,81,82].includes(code)) return 'rainy';
+    return 'normal';
+};
+
+/* ── 날씨·시간 기반 점수 ── */
+const scoreRestaurant = (category, hour, weatherType) => {
+    const c = category;
+    let score = 0;
+    let reason = '';
+
+    // 시간대
+    if (hour >= 6 && hour < 10) {
+        if (c.includes('카페') || c.includes('베이커리') || c.includes('죽')) {
+            score += 3; reason = '아침 식사로 딱이에요 ☀️';
+        } else {
+            score += 1;
+        }
+    } else if (hour >= 10 && hour < 14) {
+        if (c.includes('한식') || c.includes('분식') || c.includes('국밥') || c.includes('돼지국밥')) {
+            score += 3; reason = '든든한 점심 식사 🍱';
+        } else {
+            score += 2; reason = '점심 시간이에요 🕛';
+        }
+    } else if (hour >= 14 && hour < 17) {
+        if (c.includes('카페') || c.includes('디저트') || c.includes('베이커리')) {
+            score += 3; reason = '오후 티타임 ☕';
+        } else {
+            score += 1;
+        }
+    } else if (hour >= 17 && hour < 21) {
+        if (c.includes('고기') || c.includes('구이') || c.includes('삼겹살') || c.includes('치킨')) {
+            score += 3; reason = '저녁 식사로 딱! 🍖';
+        } else {
+            score += 2; reason = '저녁 식사 시간이에요 🌆';
+        }
+    } else {
+        if (c.includes('치킨') || c.includes('피자') || c.includes('분식') || c.includes('포장마차')) {
+            score += 3; reason = '야식으로 딱이에요 🌙';
+        } else {
+            score += 1; reason = '늦은 시간 식사 🌙';
+        }
+    }
+
+    // 날씨 보정
+    if (weatherType === 'hot') {
+        if (c.includes('냉면') || c.includes('초밥') || c.includes('회') || c.includes('카페')) {
+            score += 2; reason = '더운 날씨에 시원하게 🧊';
+        }
+        if (c.includes('고기') || c.includes('구이') || c.includes('삼겹살')) score -= 1;
+    } else if (weatherType === 'cold') {
+        if (c.includes('국밥') || c.includes('탕') || c.includes('찜') || c.includes('순대') ||
+            c.includes('설렁탕') || c.includes('삼계탕') || c.includes('한식')) {
+            score += 2; reason = '추운 날엔 뜨끈하게 🍲';
+        }
+    } else if (weatherType === 'rainy') {
+        if (c.includes('칼국수') || c.includes('수제비') || c.includes('부침') || c.includes('한식')) {
+            score += 2; reason = '비 오는 날 생각나는 맛 🌧️';
+        }
+    }
+
+    if (!reason) reason = '가까운 맛집이에요 📍';
+    return { score, reason };
+};
+
 /* ── 카카오 API ── */
 const KAKAO_KEY = '803fc99d6c59c84dd43e09d5815dcf8b';
 
 const kakaoSearch = async (lat, lon) => {
     const params = new URLSearchParams({
         category_group_code: 'FD6',
-        y: lat, x: lon, radius: 600, size: 5, sort: 'distance'
+        y: lat, x: lon, radius: 800, size: 10, sort: 'distance'
     });
     const res = await fetch(
         `https://dapi.kakao.com/v2/local/search/category.json?${params}`,
@@ -53,49 +133,69 @@ const kakaoSearch = async (lat, lon) => {
     );
     if (!res.ok) throw new Error(`Kakao ${res.status}`);
     const data = await res.json();
-    return (data.documents || []).slice(0, 3).map(r => ({
-        name: r.place_name,
-        category: r.category_name.split(' > ').pop(),
-        lat: parseFloat(r.y),
-        lon: parseFloat(r.x),
-        distance: parseInt(r.distance, 10),
-        address: r.road_address_name || r.address_name || '',
-        phone: r.phone || '',
-        url: r.place_url || ''
-    }));
+    return (data.documents || [])
+        .filter(r => r.x && r.y)
+        .map(r => ({
+            name: r.place_name,
+            category: r.category_name.split(' > ').pop(),
+            lat: parseFloat(r.y),
+            lon: parseFloat(r.x),
+            distance: parseInt(r.distance, 10) || 0,
+            address: r.road_address_name || r.address_name || '',
+            phone: r.phone || '',
+            url: r.place_url || '',
+            reason: ''
+        }))
+        .filter(r => !isNaN(r.lat) && !isNaN(r.lon));
 };
 
 /* ── Overpass 백업 ── */
 const overpassSearch = async (lat, lon) => {
-    const query = `[out:json][timeout:10];(node["amenity"~"^(restaurant|fast_food|cafe)$"](around:600,${lat},${lon}););out tags 5;`;
-    const res = await fetch('https://overpass-api.de/api/interpreter', {
-        method: 'POST', body: query
-    });
+    const query = `[out:json][timeout:10];(node["amenity"~"^(restaurant|fast_food|cafe)$"](around:800,${lat},${lon}););out body 10;`;
+    const res = await fetch('https://overpass-api.de/api/interpreter', { method: 'POST', body: query });
     if (!res.ok) throw new Error('Overpass API 오류');
     const data = await res.json();
     const AMENITY_KO = { restaurant: '음식점', fast_food: '패스트푸드', cafe: '카페' };
-    return (data.elements || []).slice(0, 3).map(r => ({
-        name: r.tags.name || r.tags['name:ko'] || '이름 없음',
-        category: AMENITY_KO[r.tags.amenity] || '음식점',
-        lat: r.lat,
-        lon: r.lon,
-        distance: haversineM(lat, lon, r.lat, r.lon),
-        address: r.tags['addr:full'] || r.tags['addr:street'] || '',
-        phone: r.tags.phone || r.tags['contact:phone'] || '',
-        url: ''
-    }));
+    return (data.elements || [])
+        .filter(r => typeof r.lat === 'number' && typeof r.lon === 'number')
+        .map(r => ({
+            name: r.tags.name || r.tags['name:ko'] || '이름 없음',
+            category: AMENITY_KO[r.tags.amenity] || '음식점',
+            lat: r.lat,
+            lon: r.lon,
+            distance: haversineM(lat, lon, r.lat, r.lon),
+            address: r.tags['addr:full'] || r.tags['addr:street'] || '',
+            phone: r.tags.phone || r.tags['contact:phone'] || '',
+            url: '',
+            reason: ''
+        }));
 };
 
-/* ── 음식점 검색 (카카오 → Overpass 순) ── */
-const fetchNearbyRestaurants = async (lat, lon) => {
+/* ── 음식점 검색 + 날씨·시간 정렬 → top 3 ── */
+const fetchRestaurants = async (lat, lon, hour, weatherType) => {
+    let items = [];
     try {
-        const results = await kakaoSearch(lat, lon);
-        if (results.length > 0) return results;
-        console.warn('카카오: 결과 없음, Overpass 시도');
+        items = await kakaoSearch(lat, lon);
+        if (items.length === 0) throw new Error('결과 없음');
     } catch (e) {
-        console.warn('카카오 API 실패:', e.message, '→ Overpass 시도');
+        console.warn('카카오 실패:', e.message, '→ Overpass 시도');
+        items = await overpassSearch(lat, lon);
     }
-    return overpassSearch(lat, lon);
+
+    if (items.length === 0) return [];
+
+    // 날씨·시간 점수 부여 후 정렬
+    return items
+        .map(r => {
+            const { score, reason } = scoreRestaurant(r.category, hour, weatherType);
+            return { ...r, score, reason };
+        })
+        .sort((a, b) => {
+            // 점수 내림차순, 동점이면 거리 오름차순
+            if (b.score !== a.score) return b.score - a.score;
+            return a.distance - b.distance;
+        })
+        .slice(0, 3);
 };
 
 /* ── 위치명 ── */
@@ -138,14 +238,15 @@ const initMap = (lat, lon, restaurants) => {
 
     const bounds = [[lat, lon]];
     restaurants.forEach((r, i) => {
+        if (typeof r.lat !== 'number' || typeof r.lon !== 'number') return;
         bounds.push([r.lat, r.lon]);
         L.marker([r.lat, r.lon], { icon: createNumberedIcon(i + 1, MARKER_COLORS[i]) })
             .addTo(map)
             .bindPopup(`<strong>${r.name}</strong><br><span style="color:#666;font-size:.85em">${r.category}</span><br><span style="color:#888;font-size:.82em">${formatDistance(r.distance)}</span>`);
     });
-    map.fitBounds(bounds, { padding: [40, 40] });
-    // hidden → visible 전환 후 Leaflet이 컨테이너 크기를 재계산하도록 강제
-    setTimeout(() => map && map.invalidateSize(), 100);
+
+    if (bounds.length > 1) map.fitBounds(bounds, { padding: [40, 40] });
+    setTimeout(() => map && map.invalidateSize(), 150);
 };
 
 /* ── UI ── */
@@ -153,6 +254,7 @@ const resultSection = document.getElementById('result-section');
 const restaurantList = document.getElementById('restaurant-list');
 const locationNameEl = document.getElementById('location-name');
 const dateTextEl = document.getElementById('date-text');
+const weatherInfoEl = document.getElementById('weather-info');
 
 const showLoading = () => {
     resultSection.hidden = false;
@@ -160,12 +262,24 @@ const showLoading = () => {
     restaurantList.innerHTML = `<div class="restaurant-card skeleton-card"><div class="skeleton sk-rank"></div><div class="skeleton-body"><div class="skeleton sk-title"></div><div class="skeleton sk-text"></div><div class="skeleton sk-text short"></div></div></div>`.repeat(3);
     locationNameEl.textContent = '위치 파악 중…';
     dateTextEl.textContent = '—';
+    if (weatherInfoEl) weatherInfoEl.textContent = '—';
 };
 
-const renderRestaurants = (restaurants) => {
+const WEATHER_LABELS = {
+    hot: '☀️ 더운 날씨',
+    cold: '🧣 추운 날씨',
+    rainy: '🌧️ 비 오는 날씨',
+    normal: '🌤️ 맑은 날씨'
+};
+
+const renderRestaurants = (restaurants, temp, weatherType) => {
     dateTextEl.textContent = new Intl.DateTimeFormat('ko-KR', {
         month: 'long', day: 'numeric', weekday: 'short'
     }).format(new Date());
+
+    if (weatherInfoEl) {
+        weatherInfoEl.textContent = `${WEATHER_LABELS[weatherType]} ${Math.round(temp)}°C`;
+    }
 
     restaurantList.innerHTML = restaurants.map((r, i) => `
         <article class="restaurant-card">
@@ -175,7 +289,10 @@ const renderRestaurants = (restaurants) => {
                     <h3 class="rest-name">${r.name}</h3>
                     <span class="rest-distance">${formatDistance(r.distance)}</span>
                 </div>
-                <span class="rest-category">${r.category}</span>
+                <div class="rest-tags">
+                    <span class="rest-category">${r.category}</span>
+                    <span class="rest-reason">${r.reason}</span>
+                </div>
                 ${r.address ? `<p class="rest-address">📌 ${r.address}</p>` : ''}
                 ${r.phone ? `<p class="rest-phone">📞 ${r.phone}</p>` : ''}
                 ${r.url ? `<a class="rest-link" href="${r.url}" target="_blank" rel="noopener noreferrer">
@@ -204,21 +321,28 @@ const run = async () => {
         return;
     }
 
+    const hour = new Date().getHours();
+
     try {
-        const [locationName, restaurants] = await Promise.all([
+        const [locationName, weather] = await Promise.all([
             fetchLocationName(coords.lat, coords.lon),
-            fetchNearbyRestaurants(coords.lat, coords.lon)
+            fetchWeather(coords.lat, coords.lon)
         ]);
 
+        const weatherType = getWeatherType(weather.code, weather.temp);
         locationNameEl.textContent = locationName;
 
+        const restaurants = await fetchRestaurants(coords.lat, coords.lon, hour, weatherType);
+
         if (!restaurants.length) {
-            restaurantList.innerHTML = '<p class="empty-msg">주변 600m 내 등록된 음식점이 없습니다.</p>';
+            restaurantList.innerHTML = '<p class="empty-msg">주변 800m 내 등록된 음식점이 없습니다.</p>';
+            if (weatherInfoEl) weatherInfoEl.textContent = `${WEATHER_LABELS[weatherType]} ${Math.round(weather.temp)}°C`;
+            dateTextEl.textContent = new Intl.DateTimeFormat('ko-KR', { month: 'long', day: 'numeric', weekday: 'short' }).format(new Date());
             return;
         }
 
         initMap(coords.lat, coords.lon, restaurants);
-        renderRestaurants(restaurants);
+        renderRestaurants(restaurants, weather.temp, weatherType);
 
     } catch (e) {
         resultSection.hidden = true;

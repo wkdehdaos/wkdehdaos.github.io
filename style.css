@@ -315,6 +315,14 @@ main {
     font-weight: 700;
 }
 
+.rest-tags {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.5rem;
+}
+
 .rest-category {
     display: inline-block;
     padding: 0.15rem 0.5rem;
@@ -323,7 +331,16 @@ main {
     color: var(--accent);
     font-size: 0.75rem;
     font-weight: 700;
-    margin-bottom: 0.5rem;
+}
+
+.rest-reason {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: rgba(46,111,82,0.1);
+    color: var(--button-bg);
+    font-size: 0.75rem;
+    font-weight: 700;
 }
 
 .rest-address, .rest-phone {
