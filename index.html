@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>팔도 실시간 날씨 음식 추천</title>
-    <link rel="stylesheet" href="style.css?v=2">
+    <title>내 위치 날씨 음식 추천</title>
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
     <header>
         <div class="header-inner">
-            <h1>팔도 실시간 날씨 음식 추천</h1>
+            <h1>내 위치 날씨 음식 추천</h1>
             <div class="header-actions">
                 <button class="header-btn" type="button" id="contact-toggle" aria-label="제휴문의">
                     <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
@@ -28,26 +28,43 @@
     </header>
 
     <main>
-        <section class="weather-selection" aria-labelledby="region-title">
-            <div class="section-heading">
-                <h2 id="region-title">한국 8개 권역 실시간 날씨</h2>
-                <p>권역을 선택하면 현재 기상 정보를 불러와 날씨에 맞는 음식 5가지를 추천합니다.</p>
+        <!-- 위치 감지 전 -->
+        <section class="locate-section" id="locate-section">
+            <div class="locate-card">
+                <div class="locate-icon">📍</div>
+                <h2>지금 내 위치의 날씨로<br>음식을 추천해드려요</h2>
+                <p>현재 위치·날씨·주변 음식점 정보를 분석해<br>딱 맞는 메뉴 2가지를 추천합니다.</p>
+                <button class="locate-btn" id="locate-btn" type="button">현재 위치로 추천받기</button>
             </div>
-            <div class="region-grid" id="region-grid" aria-label="권역 선택"></div>
         </section>
 
-        <section class="status-panel" id="status-panel" aria-live="polite">
-            <div class="status-copy">
-                <span class="status-eyebrow">현재 선택</span>
-                <h2 id="selected-region">권역을 선택하세요</h2>
-                <p id="weather-summary">실시간 날씨 정보를 기준으로 추천 메뉴가 표시됩니다.</p>
+        <!-- 로딩 / 결과 -->
+        <section class="result-section" id="result-section" hidden>
+            <!-- 위치·날씨 정보 -->
+            <div class="info-bar" id="info-bar">
+                <div class="info-item" id="info-location">
+                    <span class="info-label">위치</span>
+                    <span class="info-value" id="location-name">—</span>
+                </div>
+                <div class="info-item" id="info-weather">
+                    <span class="info-label">날씨</span>
+                    <span class="info-value" id="weather-text">—</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">날짜</span>
+                    <span class="info-value" id="date-text">—</span>
+                </div>
+                <button class="retry-btn" id="retry-btn" type="button">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    다시 찾기
+                </button>
             </div>
-            <div class="weather-metrics" id="weather-metrics" hidden></div>
-        </section>
 
-        <section class="recommendation-container" aria-labelledby="recommendation-title">
-            <h2 id="recommendation-title">추천 음식 5가지</h2>
-            <div id="food-recommendation" class="food-grid empty-state">권역을 선택하면 추천 음식이 나타납니다.</div>
+            <!-- 추천 결과 -->
+            <div class="recommendation-area">
+                <h2 class="rec-title">추천 메뉴 <span class="rec-count">2가지</span></h2>
+                <div id="food-recommendation" class="food-grid-2"></div>
+            </div>
         </section>
     </main>
 
@@ -81,7 +98,7 @@
                         <label for="contact-message">문의 내용</label>
                         <textarea id="contact-message" name="message" rows="5" required></textarea>
                     </div>
-                    <input type="hidden" name="_subject" value="팔도 실시간 날씨 음식 추천 문의">
+                    <input type="hidden" name="_subject" value="내 위치 날씨 음식 추천 문의">
                     <button class="submit-btn" type="submit">문의 보내기</button>
                 </form>
             </div>
@@ -102,6 +119,6 @@
         </div>
     </div>
 
-    <script src="main.js?v=2"></script>
+    <script src="main.js?v=3"></script>
 </body>
 </html>

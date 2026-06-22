@@ -1,8 +1,4 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
     color-scheme: light;
@@ -19,6 +15,7 @@
     --accent-soft: #fff0e8;
     --card-shadow: rgba(31, 42, 36, 0.14);
     --border: rgba(31, 42, 36, 0.14);
+    --skeleton: #e8ede9;
 }
 
 [data-theme="dark"] {
@@ -36,26 +33,27 @@
     --accent-soft: rgba(240, 160, 107, 0.16);
     --card-shadow: rgba(0, 0, 0, 0.38);
     --border: rgba(237, 244, 240, 0.16);
+    --skeleton: #1e2a23;
 }
 
 body {
     min-height: 100vh;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background-color: var(--page-bg);
+    background: var(--page-bg);
     color: var(--text);
     line-height: 1.6;
-    transition: background-color 0.25s ease, color 0.25s ease;
+    transition: background-color 0.25s, color 0.25s;
 }
 
+/* ── 헤더 ── */
 header {
     background: var(--header-bg);
     color: var(--header-text);
     padding: 1rem;
-    transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 .header-inner {
-    max-width: 1040px;
+    max-width: 900px;
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -63,11 +61,9 @@ header {
     gap: 1rem;
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+h1 { font-size: clamp(1.1rem, 3.5vw, 1.6rem); line-height: 1.2; }
+
+.header-actions { display: flex; align-items: center; gap: 0.5rem; }
 
 .header-btn {
     display: inline-flex;
@@ -75,70 +71,270 @@ header {
     gap: 0.4rem;
     min-height: 2.2rem;
     padding: 0.4rem 0.85rem;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255,255,255,0.3);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255,255,255,0.12);
     color: var(--header-text);
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 700;
     white-space: nowrap;
-    transition: background 0.15s ease, border-color 0.15s ease;
+    transition: background 0.15s, border-color 0.15s;
 }
-
-.header-btn:hover {
-    background: rgba(255, 255, 255, 0.24);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.header-btn svg {
-    flex-shrink: 0;
-}
-
-h1 {
-    font-size: clamp(1.4rem, 4vw, 2rem);
-    line-height: 1.2;
-}
-
-h2 {
-    line-height: 1.25;
-}
+.header-btn:hover { background: rgba(255,255,255,0.24); border-color: rgba(255,255,255,0.5); }
+.header-btn svg { flex-shrink: 0; }
 
 .theme-toggle {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    min-height: 2.4rem;
-    padding: 0.45rem 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.28);
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.1);
+    min-height: 2.2rem;
+    padding: 0.4rem 0.85rem;
+    border: 1px solid rgba(255,255,255,0.28);
+    border-radius: 999px;
+    background: rgba(255,255,255,0.1);
     color: var(--header-text);
     cursor: pointer;
     font-weight: 700;
     white-space: nowrap;
+    transition: background 0.15s;
+}
+.theme-toggle:hover { background: rgba(255,255,255,0.22); }
+
+/* ── 메인 레이아웃 ── */
+main {
+    width: min(900px, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 2rem 0 3rem;
 }
 
-.theme-toggle:hover {
-    background: rgba(255, 255, 255, 0.18);
+/* ── 위치 감지 전 화면 ── */
+.locate-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
 }
 
-/* 모달 */
+.locate-card {
+    text-align: center;
+    padding: 2.5rem 2rem;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--panel-bg);
+    box-shadow: 0 8px 32px var(--card-shadow);
+    max-width: 420px;
+    width: 100%;
+}
+
+.locate-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+.locate-card h2 {
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.locate-card p {
+    color: var(--muted-text);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.locate-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.8rem 1.75rem;
+    border: none;
+    border-radius: 999px;
+    background: var(--button-bg);
+    color: var(--button-text);
+    font-size: 1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+}
+.locate-btn:hover { background: var(--button-bg-hover); transform: translateY(-1px); }
+
+/* ── 결과 화면 ── */
+.result-section[hidden] { display: none; }
+
+/* 위치·날씨 정보 바 */
+.info-bar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel-bg);
+    box-shadow: 0 4px 16px var(--card-shadow);
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+}
+
+.info-label {
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.info-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.retry-btn {
+    margin-left: auto;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted-text);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+.retry-btn:hover { background: var(--page-bg); color: var(--text); }
+
+/* 추천 영역 */
+.rec-title {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: var(--muted-text);
+}
+.rec-title .rec-count {
+    color: var(--text);
+    font-size: 1.3rem;
+}
+
+.food-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.food-card {
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--panel-bg);
+    box-shadow: 0 4px 20px var(--card-shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+.food-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px var(--card-shadow); }
+
+.food-tag {
+    display: inline-flex;
+    width: fit-content;
+    margin-bottom: 0.6rem;
+    padding: 0.2rem 0.55rem;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.food-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+}
+
+.food-card p {
+    color: var(--muted-text);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-bottom: 0.75rem;
+}
+
+.food-basis {
+    display: inline-block;
+    font-size: 0.75rem;
+    color: var(--muted-text);
+    opacity: 0.7;
+}
+
+/* 스켈레톤 로딩 */
+.loading-card { pointer-events: none; }
+
+.skeleton {
+    border-radius: 6px;
+    background: var(--skeleton);
+    animation: pulse 1.4s ease-in-out infinite;
+}
+.skeleton-tag { height: 1.2rem; width: 4rem; margin-bottom: 0.8rem; }
+.skeleton-title { height: 1.8rem; width: 60%; margin-bottom: 0.7rem; }
+.skeleton-text { height: 3.5rem; width: 100%; }
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
+
+/* ── 폼 공통 ── */
+.contact-form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.85rem;
+}
+.form-row { display: flex; flex-direction: column; gap: 0.35rem; }
+.form-row-full { grid-column: 1 / -1; }
+.form-row label { color: var(--muted-text); font-size: 0.9rem; font-weight: 800; }
+.form-row input, .form-row select, .form-row textarea {
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--page-bg);
+    color: var(--text);
+    font: inherit;
+    padding: 0.7rem 0.75rem;
+}
+.form-row textarea { min-height: 8.5rem; resize: vertical; }
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+    border-color: var(--accent);
+    outline: 2px solid var(--accent-soft);
+}
+.submit-btn {
+    justify-self: start;
+    min-height: 2.75rem;
+    padding: 0.7rem 1.2rem;
+    border: 0;
+    border-radius: 8px;
+    background: var(--button-bg);
+    color: var(--button-text);
+    cursor: pointer;
+    font-weight: 800;
+}
+.submit-btn:hover { background: var(--button-bg-hover); }
+
+/* ── 모달 ── */
 .modal-overlay {
     display: none;
     position: fixed;
     inset: 0;
     z-index: 100;
-    background: rgba(0, 0, 0, 0.55);
+    background: rgba(0,0,0,0.55);
     align-items: center;
     justify-content: center;
     padding: 1rem;
     backdrop-filter: blur(2px);
 }
-
-.modal-overlay.is-open {
-    display: flex;
-}
+.modal-overlay.is-open { display: flex; }
 
 .modal {
     width: min(520px, 100%);
@@ -147,13 +343,10 @@ h2 {
     flex-direction: column;
     border-radius: 12px;
     background: var(--panel-bg);
-    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.32);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.32);
     overflow: hidden;
 }
-
-.modal-wide {
-    width: min(760px, 100%);
-}
+.modal-wide { width: min(760px, 100%); }
 
 .modal-header {
     display: flex;
@@ -163,293 +356,26 @@ h2 {
     border-bottom: 1px solid var(--border);
     flex-shrink: 0;
 }
-
-.modal-header h2 {
-    font-size: 1.1rem;
-}
+.modal-header h2 { font-size: 1.1rem; }
 
 .modal-close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: none;
-    border-radius: 6px;
-    background: transparent;
-    color: var(--muted-text);
-    cursor: pointer;
-    font-size: 1rem;
-    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 2rem; height: 2rem;
+    border: none; border-radius: 6px;
+    background: transparent; color: var(--muted-text);
+    cursor: pointer; font-size: 1rem; flex-shrink: 0;
 }
+.modal-close:hover { background: var(--page-bg); color: var(--text); }
 
-.modal-close:hover {
-    background: var(--page-bg);
-    color: var(--text);
-}
+.modal-body { padding: 1.25rem; overflow-y: auto; }
+.modal-desc { color: var(--muted-text); margin-bottom: 1rem; font-size: 0.92rem; }
 
-.modal-body {
-    padding: 1.25rem;
-    overflow-y: auto;
-}
-
-.modal-desc {
-    color: var(--muted-text);
-    margin-bottom: 1rem;
-    font-size: 0.92rem;
-}
-
-main {
-    width: min(1040px, calc(100% - 2rem));
-    margin: 0 auto;
-    padding: 1.25rem 0 2rem;
-}
-
-.weather-selection,
-.status-panel,
-.recommendation-container {
-    margin-bottom: 1.25rem;
-}
-
-.section-heading {
-    margin-bottom: 1rem;
-}
-
-.section-heading p,
-#weather-summary {
-    color: var(--muted-text);
-}
-
-.region-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0.75rem;
-}
-
-.region-btn {
-    min-height: 5rem;
-    padding: 0.8rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--panel-bg);
-    color: var(--text);
-    cursor: pointer;
-    text-align: left;
-    box-shadow: 0 3px 12px var(--card-shadow);
-    transition: transform 0.2s ease, border-color 0.2s ease, background-color 0.25s ease;
-}
-
-.region-btn:hover,
-.region-btn.active {
-    border-color: var(--accent);
-    transform: translateY(-2px);
-}
-
-.region-btn strong,
-.region-btn span {
-    display: block;
-}
-
-.region-btn strong {
-    font-size: 1rem;
-}
-
-.region-btn span {
-    color: var(--muted-text);
-    font-size: 0.9rem;
-}
-
-.status-panel {
-    display: flex;
-    align-items: stretch;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--panel-bg);
-    box-shadow: 0 4px 16px var(--card-shadow);
-}
-
-.status-eyebrow,
-.food-tag {
-    display: inline-flex;
-    width: fit-content;
-    margin-bottom: 0.35rem;
-    padding: 0.18rem 0.45rem;
-    border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-size: 0.78rem;
-    font-weight: 800;
-}
-
-.weather-metrics {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(7rem, 1fr));
-    gap: 0.6rem;
-    min-width: 18rem;
-}
-
-.metric {
-    padding: 0.7rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--page-bg);
-}
-
-.metric span {
-    display: block;
-    color: var(--muted-text);
-    font-size: 0.78rem;
-    font-weight: 700;
-}
-
-.metric strong {
-    display: block;
-    font-size: 1.05rem;
-}
-
-.recommendation-container h2 {
-    margin-bottom: 0.85rem;
-}
-
-.food-grid {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 0.75rem;
-}
-
-.food-card {
-    min-height: 9.5rem;
-    padding: 1rem;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--panel-bg);
-    box-shadow: 0 4px 16px var(--card-shadow);
-    transition: transform 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
-}
-
-.food-card:hover {
-    transform: translateY(-3px);
-}
-
-.food-card h3 {
-    margin-bottom: 0.45rem;
-    font-size: 1.05rem;
-}
-
-.food-card p {
-    color: var(--muted-text);
-    font-size: 0.92rem;
-}
-
-.contact-form {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.85rem;
-}
-
-.form-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-}
-
-.form-row-full {
-    grid-column: 1 / -1;
-}
-
-.form-row label {
-    color: var(--muted-text);
-    font-size: 0.9rem;
-    font-weight: 800;
-}
-
-.form-row input,
-.form-row select,
-.form-row textarea {
-    width: 100%;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: var(--page-bg);
-    color: var(--text);
-    font: inherit;
-    padding: 0.7rem 0.75rem;
-}
-
-.form-row textarea {
-    min-height: 8.5rem;
-    resize: vertical;
-}
-
-.form-row input:focus,
-.form-row select:focus,
-.form-row textarea:focus {
-    border-color: var(--accent);
-    outline: 2px solid var(--accent-soft);
-}
-
-.submit-btn {
-    justify-self: start;
-    min-height: 2.75rem;
-    padding: 0.7rem 1rem;
-    border: 0;
-    border-radius: 8px;
-    background: var(--button-bg);
-    color: var(--button-text);
-    cursor: pointer;
-    font-weight: 800;
-}
-
-.submit-btn:hover {
-    background: var(--button-bg-hover);
-}
-
-.empty-state,
-.loading-state,
-.error-state {
-    display: block;
-    padding: 1rem;
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-    color: var(--muted-text);
-    background: var(--panel-bg);
-}
-
-.error-state {
-    color: #c84343;
-}
-
-@media (max-width: 860px) {
-    .region-grid,
-    .food-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .status-panel {
-        flex-direction: column;
-    }
-
-    .weather-metrics {
-        min-width: 0;
-    }
-}
-
-@media (max-width: 520px) {
-    .header-inner {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .header-btn-label {
-        display: none;
-    }
-
-    .region-grid,
-    .food-grid,
-    .weather-metrics,
-    .contact-form {
-        grid-template-columns: 1fr;
-    }
+/* ── 반응형 ── */
+@media (max-width: 600px) {
+    .header-inner { flex-direction: column; align-items: flex-start; }
+    .food-grid-2 { grid-template-columns: 1fr; }
+    .info-bar { flex-direction: column; align-items: flex-start; }
+    .retry-btn { margin-left: 0; }
+    .contact-form { grid-template-columns: 1fr; }
+    .header-btn-label { display: none; }
 }
